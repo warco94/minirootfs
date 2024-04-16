@@ -1,0 +1,23 @@
+#!/bin/sh
+
+if [ "x$1" = "xstart" ]
+then
+	echo "Network up"
+	ifconfig lo 127.0.0.1
+	route add -net 127.0.0.0 netmask 255.0.0.0 lo
+
+	ipaddr=192.168.100.15
+	netmask=255.255.255.0
+
+	[ -n "$ipaddr" ] && ifconfig eth0 $ipaddr || \
+		echo Warning: could not set eth0 ip address
+
+	[ -n "$netmask" ] && ifconfig eth0 netmask $netmask || \
+		echo Warning: could not set eth0 netmask
+fi
+
+if [ "x$1" = "xstop" ]; then
+	echo "Network down"
+	ifconfig eth0 down
+	ifconfig lo down
+fi

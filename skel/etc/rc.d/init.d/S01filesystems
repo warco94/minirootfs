@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if [ "$1" = "stop" ]; then
+	echo Unmounting filesystems
+
+	while read dev mnt type line; do
+		if [ "x$type" != "xrootfs" -a "x$type" != "xproc" ]; then
+			echo "Unmounting $mnt"
+			umount -n "$mnt"
+		fi
+	done < /proc/mounts
+
+	mount -n -o remount,ro /
+	umount -n /proc
+fi
+
+if [ "$1" = "start" ]; then
+	echo Mounting filesystems
+	mount -n -t proc none /proc
+	mount -n -t sysfs none /sys
+	mount -n -t devpts none /dev/pts
+	mount -n -t tmpfs shm /dev/shm
+	mount -n -t tmpfs rwfs /mnt/rwfs -o size=${RWFS_SIZE:-512k}
+fi

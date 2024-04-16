@@ -1,0 +1,7 @@
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+export LD_LIBRARY_PATH=/lib:/usr/lib
+
+alias ll='ls -l'
+alias la='ll -a'
+
+export PS1='\u@\h \w$ '
