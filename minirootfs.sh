@@ -132,6 +132,7 @@ ln -s /proc/self/fd/0 stdin
 ln -s /proc/self/fd/1 stdout
 ln -s /proc/self/fd/2 stderr
 ln -s /proc/mounts etc/mtab
+ln -s /sbin/init init
 
 # copy libc dynamic libraries
 echo -e "\nCopy dynamic libraries\n"
