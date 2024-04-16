@@ -145,7 +145,13 @@ done
 # build busybox
 echo -e "\nBuild busybox\n"
 busybox_ver=1.36.1
-cd "$cwd_dir"/busybox-${busybox_ver}
+busybox_dir=busybox-${busybox_ver}
+busybox_tar=busybox-${busybox_ver}.tar.bz2
+[ ! -f "$cwd_dir/$busybox_tar" ] \
+    && wget https://busybox.net/downloads/$busybox_tar -O "$cwd_dir/$busybox_tar"
+[ ! -d "$cwd_dir/$busybox_dir" ] \
+    && tar -C "$cwd_dir" -xvf "$cwd_dir/$busybox_tar"
+cd "$cwd_dir/${busybox_dir}"
 rsync -a "$cwd_dir"/busybox-${busybox_ver}.config .config
 make ARCH=arm CROSS_COMPILE=$toolchain -j$ncore
 make ARCH=arm CROSS_COMPILE=$toolchain CONFIG_PREFIX="$stage_dir" install
