@@ -72,6 +72,9 @@ mkdir mnt/rwfs
 mkdir root
 mkdir home
 
+# create lib64 as a symlink to lib
+ln -s lib lib64
+
 # create devices
 mkdir dev/pts
 mkdir dev/net
@@ -154,8 +157,8 @@ busybox_tar=busybox-${busybox_ver}.tar.bz2
     && tar -C "$cwd_dir" -xvf "$cwd_dir/$busybox_tar"
 cd "$cwd_dir/${busybox_dir}"
 rsync -a "$cwd_dir"/busybox-${busybox_ver}.config .config
-make ARCH=arm CROSS_COMPILE=$toolchain -j$ncore
-make ARCH=arm CROSS_COMPILE=$toolchain CONFIG_PREFIX="$stage_dir" install
+make ARCH=arm64 CROSS_COMPILE=$toolchain -j$ncore
+make ARCH=arm64 CROSS_COMPILE=$toolchain CONFIG_PREFIX="$stage_dir" install
 cd -
 
 # copy skeleton files
@@ -172,8 +175,7 @@ find "$stage_dir" -type f -executable |\
 	xargs -I{} file --separator " " "{}" | grep ARM | awk '{print $1}' |\
 	xargs -I{} ${toolchain}strip -s "{}"
 
-# create initramfs
-echo -e "\nCreate initramfs\n"
-find . | cpio --quiet -H newc -o | gzip -9 -n > "$cwd_dir"/initramfs.cpio.gz
-
+# copy populated rootfs to output directory
+echo -e "\nPopulate rootfs directory\n"
+cp -r "${stage_dir}" "${cwd_dir}/rootfs"
 echo -e "\nDone\n"
